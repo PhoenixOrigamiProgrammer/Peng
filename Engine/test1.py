@@ -1,13 +1,21 @@
 import peng
 import time 
+import numpy as np
 e = peng
-a = e.c_polygon([0,0,300,300,200,100],fill="green",out = "black")
-b = e.c_polygon([300,0,0,300,500,500],fill="red",out = "black")
+bl =[300,0,
+    0,400,
+    500,500]
+b = e.c_polygon(bl,fil="red",out = "black")
+al =[0,0,
+    300,300,
+    200,100]
+a = e.c_polygon(al,fil="green",out = "black")
 c = e.ck_polygon(a,b)
-if c == "no":
+if type(c) == np.array:
     print("no")
 else: 
     print(c)
-    b = e.c_polygon(c,fill="yellow",out = "blue")
+    c = list(c)
+    b = e.c_polygon(c,fil="yellow",out = "blue")
 e.reload()
 input("end?")

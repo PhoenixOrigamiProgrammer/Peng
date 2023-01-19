@@ -47,7 +47,8 @@ class engine(tk.Frame):
         else:
             return("no")
     def c_polygon(self,list,fill,out):  #polygon creating
-        a = self.cv.create_polygon([list],fill=fill, outline=out)
+        print(list)
+        a = self.cv.create_polygon(list,fill=fill, outline=out)
         return([a,list])
     def ck_polygon(self,l1,l2): #colision detektion polygon
         t1 = l1[1]
@@ -67,7 +68,6 @@ class engine(tk.Frame):
                 a.append(t1[g-2])
                 a.append(t1[g-3])
             tl1.append(a)
-            print(tl1)
         for g in range(int(len(t2)/2)):
             a = list()
             g*=2
@@ -80,14 +80,13 @@ class engine(tk.Frame):
                 a.append(t2[g-2])
                 a.append(t2[g-3])
             tl2.append(a)
-            print(tl2)
         for i in range(len(tl1)):   #crosspoints
             for j in range(len(tl2)):
                 a = self.ck_l(tl1[i],tl2[j])
-                if a == "no":
-                    pass
+                if type(a) == np.array:
+                    s.extend(a)
                 else:
-                    s.append(a)
+                    pass
         for q in tl1:    #find corners of a polygon in the other
             f = q[1]    #making a ray
             x = q[0]
@@ -100,16 +99,17 @@ class engine(tk.Frame):
                 fx1 = uy1/ux1
                 x01 = p1[1] * fx1
                 f1 = x01-p1[0]
-                sx = (f1-f)/(fx1-x)     #solve it
-                if p1[0]<sx<p1[2] or p1[0]>sx>p1[2]:
-                    l.append([sx,f])
+                if fx1 != x:
+                    sx = (f1-f)/(fx1-x)     #solve it
+                    if p1[0]<sx<p1[2] or p1[0]>sx>p1[2]:
+                        l.append([sx,f])
             k = 0
             for e in l:
-                if e>q[0]:
+                if e[0]>q[0]:
                     k += 1
             k -= 1
             if k // 2:
-                s.append(q)
+                s.extend(q)
         return(np.array(s))
     def reload(self):   #cv.updeate
         self.cv.update()
@@ -131,8 +131,8 @@ def c_point(x,y):
 def ck_l(l1,l2):
     a = app.ck_l(l1,l2)
     return(a)
-def c_polygon(list,fill,out):
-    a = app.c_polygon(list,fill,out)
+def c_polygon(list,fil,out):
+    a = app.c_polygon(list,fil,out)
     return(a)
 def ck_polygon(p1,p2):
     a = app.ck_polygon(p1,p2)
