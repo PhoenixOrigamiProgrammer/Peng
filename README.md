@@ -5,3 +5,4 @@ Please so help me with it I am not a master.
 
 You need Pandas NumPy  vulkan
 
+It will be in Vulcan as fast as possible
