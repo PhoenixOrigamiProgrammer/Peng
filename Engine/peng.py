@@ -100,7 +100,7 @@ class engine(tk.Frame):
                 x01 = p1[1] * fx1
                 f1 = x01-p1[0]
                 if fx1 != x:
-                    sx = (f1-f)/(fx1-x)     #solve it
+                    sx = (f1-f)/(fx1)     #solve it
                     if p1[0]<sx<p1[2] or p1[0]>sx>p1[2]:
                         l.append([sx,f])
             k = 0
@@ -117,7 +117,7 @@ class engine(tk.Frame):
         a = self.cv.create_oval(x+2,y+2,x-2,x-2, fill = "red")
         return(np.array([x,y,a]))
 root = tk.Tk()
-root.title("CTD")
+root.title("Game")
 app = engine(root)
 app.mainloop
 def c_line(x1,y1,x2,y2,w=5):    #make it less frustrating
