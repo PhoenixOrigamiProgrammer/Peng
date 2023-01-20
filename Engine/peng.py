@@ -99,7 +99,7 @@ class engine(tk.Frame):
                 fx1 = uy1/ux1
                 x01 = p1[1] * fx1
                 f1 = x01-p1[0]
-                if fx1 != x:
+                if fx1 != 0:
                     sx = (f1-f)/(fx1)     #solve it
                     if p1[0]<sx<p1[2] or p1[0]>sx>p1[2]:
                         l.append([sx,f])
