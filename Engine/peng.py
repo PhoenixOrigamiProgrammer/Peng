@@ -16,101 +16,106 @@ class engine(tk.Frame):
         self.cv = tk.Canvas(width=self.x, height=self.y, bg="white")
         self.cv.pack()
         self.quit = False
-    def c_line(self,x1,y1,x2,y2,w): #create linien
+    def create_line(self,x1,y1,x2,y2,w): #create linien
         l = self.cv.create_line(x1,y1,x2,y2,width=w)
         return(np.array([x1,y1,x2,y2,l]))
-    def move_l(self, l, x,y):   #move linien
-        line = l[4]
-        x1 = l[0]
-        y1 = l[1]
-        x2 = l[2]
-        y2 = l[3]
+    def move_line(self, line, x,y):   #move linien
+        cvline = line[4]
+        x1 = line[0]
+        y1 = line[1]
+        x2 = line[2]
+        y2 = line[3]
         x3 = (x1+x2)/2
         y3 = (x1+x2)/2
-        self.cv.move(line,x3+x,y3+y)
-        return np.array([line, x1+x, y1+y, x2+x, y2+y])
-    def ck_l(self,l1,l2):   #colision detektion lines
-        ux1 = l1[0]- l1[2]  #turn it into fx1*x+f1=fx2*x+f2 format
-        uy1 = l1[1]- l1[3]
-        fx1 = uy1/ux1
-        x01 = l1[1] * fx1
-        f1 = x01-l1[0]
-        ux2 = l2[0]- l2[2]
-        uy2 = l2[1]- l2[3]
-        fx2 = uy2/ux2
-        x02 = l2[1] * fx2
-        f2 = x02-l2[0]
-        sx = (f1-f2)/(fx1-fx2)     #solve it
-        sy = sx*fx1
-        if (l1[0]<sx<l1[2] or l1[0]>sx>l1[2]) and (l2[0]<sx<l2[2] or l2[0]>sx>l2[2]):
-            return(np.array([sx,sy])) 
+        self.cv.move(cvline,x3+x,y3+y)
+        return np.array([cvline, x1+x, y1+y, x2+x, y2+y])
+    def colision_line(self,line1,line2):   #colision detektion lines
+        x1 = line1[0]- line1[2]  #turn it into fx1*x+f1=fx2*x+f2 format
+        y1 = line1[1]- line1[3]
+        functionx1 = y1/x1
+        x01 = line1[1] * functionx1
+        functiony1 = x01-line1[0]
+        x2 = line2[0]- line2[2]
+        y2 = line2[1]- line2[3]
+        functionx2 = y2/x2
+        x02 = line2[1] * functionx2
+        functiony2 = x02-line2[0]
+        solutionx = (functiony1-functiony2)/(functionx1-functionx2)     #solve it
+        solutiony = solutionx*functionx1
+        if ((line1[0]<solutionx<line1[2] or line1[0]>solutionx>line1[2]) and (line2[0]<solutionx<line2[2] or line2[0]>solutionx>line2[2])) and ((line1[1]<solutionx<line1[3] or line1[1]>solutionx>line1[3]) and (line2[1]<solutiony<line2[3] or line2[1]>solutiony>line2[3])):
+            return(np.array([solutionx,solutiony])) 
         else:
             return("no")
-    def c_polygon(self,list,fill,out):  #polygon creating
-        print(list)
+    def create_polygon(self,list,fill,out):  #polygon creating
         a = self.cv.create_polygon(list,fill=fill, outline=out)
         return([a,list])
-    def ck_polygon(self,l1,l2): #colision detektion polygon
-        t1 = l1[1]
-        t2 = l2[1]
-        s = list()
-        tl1 = list()
-        tl2 = list()
-        for g in range(int(len(t1)/2)):    #make list of lines
-            a = list()
-            g*=2
-            a.append(t1[g])
-            a.append(t1[g-1])
-            if g == 0:
-                a.append(t1[len(t1)-1])
-                a.append(t1[len(t1)-2])
+    def colision_polygon(self,polygon1,polygon2): #colision detektion polygon
+        polygonlist1 = polygon1[1]
+        polygonlist2 = polygon2[1]
+        solution = list()
+        pline1 = list()
+        pline2 = list()
+        for counter in range(int(len(polygonlist1)/2)):    #make list of lines
+            linelist = list()
+            counter +=1
+            counter*=2
+            linelist.append(polygonlist1[counter-1])
+            linelist.append(polygonlist1[counter-2])
+            if counter == 0:
+                linelist.append(polygonlist1[len(polygonlist1)-1])
+                linelist.append(polygonlist1[len(polygonlist1)-2])
             else:
-                a.append(t1[g-2])
-                a.append(t1[g-3])
-            tl1.append(a)
-        for g in range(int(len(t2)/2)):
-            a = list()
-            g*=2
-            a.append(t2[g])
-            a.append(t2[g-1])
-            if g == 0:
-                a.append(t2[len(t2)-1])
-                a.append(t2[len(t2)-2])
+                linelist.append(polygonlist1[counter-3])
+                linelist.append(polygonlist1[counter-4])
+            pline1.append(linelist)
+            create_line(linelist[0],linelist[1],linelist[2],linelist[3],10)
+        for counter in range(int(len(polygonlist2)/2)):
+            linelist = list()
+            counter+=1
+            counter*=2
+            linelist.append(polygonlist2[counter-1])
+            linelist.append(polygonlist2[counter-2])
+            if counter == 0:
+                linelist.append(polygonlist2[len(polygonlist2)-1])
+                linelist.append(polygonlist2[len(polygonlist2)-2])
             else:
-                a.append(t2[g-2])
-                a.append(t2[g-3])
-            tl2.append(a)
-        for i in range(len(tl1)):   #crosspoints
-            for j in range(len(tl2)):
-                a = self.ck_l(tl1[i],tl2[j])
+                linelist.append(polygonlist2[counter-3])
+                linelist.append(polygonlist2[counter-4])
+            pline2.append(linelist)
+            create_line(linelist[0],linelist[1],linelist[2],linelist[3],10)
+        for counteri in range(len(pline1)):   #crosspoints
+            for counterj in range(len(pline2)):
+                a = self.colision_line(pline1[counteri],pline2[counterj])
                 if type(a) == np.array:
-                    s.extend(a)
+                    solution.extend(a)
                 else:
                     pass
-        for q in tl1:    #find corners of a polygon in the other
-            f = q[1]    #making a ray
-            x = q[0]
+        '''for counterq in pline1:    #find corners of a polygon in the other
+            functiony = counterq[1]    #making a ray
+            chekx = counterq[0]
             l = list()
-            for r in range(len(tl2)):
-                self.line = tl2[r]  #find crosspoints
-                p1 = [self.line[0],self.line[1],self.line[2],self.line[3]]
-                ux1 = p1[0]- p1[2]
-                uy1 = p1[1]- p1[3]
-                fx1 = uy1/ux1
-                x01 = p1[1] * fx1
-                f1 = x01-p1[0]
-                if fx1 != x:
-                    sx = (f1-f)/(fx1-x)     #solve it
-                    if p1[0]<sx<p1[2] or p1[0]>sx>p1[2]:
-                        l.append([sx,f])
-            k = 0
-            for e in l:
-                if e[0]>q[0]:
-                    k += 1
-            k -= 1
-            if k // 2:
-                s.extend(q)
-        return(np.array(s))
+            for r in range(len(pline2)):
+                line = pline2[r]  #find crosspoints
+                x1 = line[0]- line[2]
+                y1 = line[1]- line[3]
+                functionx = y1/x1
+                x01 = line[1] * functionx
+                functiony1 = x01-line[0]
+                if functionx != 0:
+                    sx = (functiony1-functiony)/(functionx)     #solve it
+                    if (line[0]<sx<line[2] or line[0]>sx>line[2]) and (line[1]<functiony<line[3] or line[1]>functiony>line[3]):
+                        l.append([sx,functiony])
+            counterk = 0
+            for countere in l:
+                if countere[0]>counterq[0]:
+                    counterk += 1
+            counterk -= 1
+            if counterk // 2:
+                solution.extend(counterq)'''
+        if len(solution)==0:
+            return("no")
+        else:
+            return(np.array(solution))
     def reload(self):   #cv.updeate
         self.cv.update()
     def c_point(self,x,y):  #punkt createn
@@ -120,23 +125,23 @@ root = tk.Tk()
 root.title("CTD")
 app = engine(root)
 app.mainloop
-def c_line(x1,y1,x2,y2,w=5):    #make it less frustrating
-    a = app.c_line(x1,y1,x2,y2,w)
+def create_line(x1,y1,x2,y2,w=5):    #make it less frustrating
+    a = app.create_line(x1,y1,x2,y2,w)
     return(a)
 def reload():
     app.reload()
-def c_point(x,y):
+def create_point(x,y):
     a = app.c_point(x,y)
     return(a)
-def ck_l(l1,l2):
-    a = app.ck_l(l1,l2)
+def colision_line(l1,l2):
+    a = app.colision_line(l1,l2)
     return(a)
-def c_polygon(list,fil,out):
-    a = app.c_polygon(list,fil,out)
+def create_polygon(list,fil,out):
+    a = app.create_polygon(list,fil,out)
     return(a)
-def ck_polygon(p1,p2):
-    a = app.ck_polygon(p1,p2)
+def colision_polygon(p1,p2):
+    a = app.colision_polygon(p1,p2)
     return(a)
-def move_l(l, x,y):
-    a = app.reload(l, x,y)
+def move_line(l, x,y):
+    a = app.move_line(l, x,y)
     return(a)
