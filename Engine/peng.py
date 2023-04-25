@@ -90,39 +90,37 @@ class engine(tk.Frame):
                     solution.extend(a)
                 else:
                     pass
-        '''for counterq in pline1:    #find corners of a polygon in the other
+        for counterq in pline1:    #find corners of a polygon in the other
             functiony = counterq[1]    #making a ray
             chekx = counterq[0]
             l = list()
-            for r in range(len(pline2)):
-                line = pline2[r]  #find crosspoints
-                x1 = line[0]- line[2]
-                y1 = line[1]- line[3]
-                functionx = y1/x1
-                x01 = line[1] * functionx
-                functiony1 = x01-line[0]
-                if functionx != 0:
-                    sx = (functiony1-functiony)/(functionx)     #solve it
-                    if (line[0]<sx<line[2] or line[0]>sx>line[2]) and (line[1]<functiony<line[3] or line[1]>functiony>line[3]):
-                        l.append([sx,functiony])
-            counterk = 0
-            for countere in l:
-                if countere[0]>counterq[0]:
-                    counterk += 1
-            counterk -= 1
-            if counterk // 2:
-                solution.extend(counterq)'''
-        if len(solution)==0:
-            return("no")
-        else:
-            return(np.array(solution))
+            for r in range(len(tl2)):
+                self.line = tl2[r]  #find crosspoints
+                p1 = [self.line[0],self.line[1],self.line[2],self.line[3]]
+                ux1 = p1[0]- p1[2]
+                uy1 = p1[1]- p1[3]
+                fx1 = uy1/ux1
+                x01 = p1[1] * fx1
+                f1 = x01-p1[0]
+                if fx1 != 0:
+                    sx = (f1-f)/(fx1)     #solve it
+                    if p1[0]<sx<p1[2] or p1[0]>sx>p1[2]:
+                        l.append([sx,f])
+            k = 0
+            for e in l:
+                if e[0]>q[0]:
+                    k += 1
+            k -= 1
+            if k // 2:
+                s.extend(q)
+        return(np.array(s))
     def reload(self):   #cv.updeate
         self.cv.update()
     def c_point(self,x,y):  #punkt createn
         a = self.cv.create_oval(x+2,y+2,x-2,x-2, fill = "red")
         return(np.array([x,y,a]))
 root = tk.Tk()
-root.title("CTD")
+root.title("Game")
 app = engine(root)
 app.mainloop
 def create_line(x1,y1,x2,y2,w=5):    #make it less frustrating
